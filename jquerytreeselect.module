@@ -1,0 +1,99 @@
+<?php
+
+/**
+ * @file
+ * The Drupal hooks for jQuery Tree Select.
+ */
+
+/**
+ * Implements hook_help().
+ *
+ * Adds some help text for jQuery Tree Select.
+ */
+function jquerytreeselect_help($path, $arg) {
+  switch ($path) {
+  case 'admin/help#jquerytreeselect':
+    return '<p>' . t('<a href="@jquerytreeselect">jQuery Tree Select</a> is a minimalistic jQuery hierarchy select widget used for selecting hierarchy structures in a treeview format. See a <a href="@test">demonstration of its use</a>.', array(
+      '@jquerytreeselect' => 'http://travistidwell.com/jquery.treeselect.js/',
+      '@test' => url('admin/jquerytreeselect'),
+    )) . '</p>';
+  }
+}
+
+function jquerytreeselect_menu() {
+    $items['admin/jquerytreeselect'] = array(
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('jquerytreeselect_admin_form'),
+      'access arguments' => array('administer site configuration'),
+      'type' => MENU_CALLBACK,
+    );
+
+    return $items;
+}
+
+function jquerytreeselect_admin_form() {
+  $form['jquerytreeselect'] = array(
+    '#type' => 'select',
+    '#title' => t('Demonstration'),
+    '#options' => array(
+      1 => t('Thing 1'),
+      2 => t('Thing 2'),
+      3 => t('Thing 3'),
+    ),
+  );
+  $form['#attached'] = array(
+    'library' => array(
+      array('jquerytreeselect', 'jquery.treeselect.js'),
+    ),
+  );
+
+  return $form;
+}
+
+/**
+ * Implements hook_library_info().
+ *
+ * Add the jQuery Tree Select Widget to the libraries registry.
+ */
+function jquerytreeselect_libraries_info() {
+  // jQuery TreeSelect
+  $libraries['jquery.treeselect.js'] = array(
+    'name' => 'jQuery TreeSelect',
+    'vendor url' => 'http://travistidwell.com/jquery.treeselect.js/',
+    'download url' => 'https://github.com/travist/jquery.treeselect.js/archive/master.zip',
+    'path' => 'jquery.treeselect.js-master',
+    'files' => array(
+      'js' => array(
+        'bin/jquery.treeselect.js',
+      ),
+      'css' => array(
+        'bin/jquery.treeselect.css',
+      ),
+    ),
+    'version callback' => 'jquerytreeselect_libraries_get_version',
+    'integration files' => array(
+      'jquerytreeselect' => array(
+        'js' => array('jquerytreeselect.js'),
+      ),
+    ),
+  );
+
+  return $libraries;
+}
+
+/**
+ * Libraries API callback; Retrieve the version of jQuery TreeSelect.
+ */
+function jquerytreeselect_libraries_get_version($library, $blah) {
+  // Check if the library path was found.
+  if (isset($library['library path'])) {
+    // Parse package.json for the version number.
+    $file = $library['library path'] . '/package.json';
+    $json = json_decode(file_get_contents($file), true);
+    if (isset($json['version'])) {
+      return $json['version'];
+    }
+  }
+
+  return FALSE;
+}

@@ -1,0 +1,5 @@
+name = jQuery TreeSelect
+description = Minimalistic jQuery hierarchy select widget used for selecting hierarchy structures in a treeview format.
+core = 7.x
+dependencies[] = libraries
+configure = admin/reports/status

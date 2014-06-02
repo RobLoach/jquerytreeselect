@@ -1,0 +1,27 @@
+<?php
+
+/**
+ * @file
+ * Requirements for jQuery Tree Select.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function jquerytreeselect_requirements($phase) {
+  $requirements = array();
+
+  // Report the version of Font Awesome.
+  if ($phase == 'runtime') {
+    // Make sure Libraries is loaded before loading jQuery Tree Select.
+    drupal_load('module', 'libraries');
+    $jquerytreeselect = libraries_detect('jquery.treeselect.js');
+    $requirements['jquery.treeselect.js'] = array(
+      'title' => $jquerytreeselect['name'],
+      'severity' => $jquerytreeselect['installed'] ? REQUIREMENT_OK : REQUIREMENT_WARNING,
+      'value' => $jquerytreeselect['installed'] ? $jquerytreeselect['version'] : $jquerytreeselect['error message'],
+    );
+  }
+
+  return $requirements;
+}
